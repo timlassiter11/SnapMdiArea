@@ -1,0 +1,12 @@
+#ifndef SNAPMDIAREA_GLOBAL_H
+#define SNAPMDIAREA_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(SNAPMDIAREA_LIBRARY)
+#  define SNAPMDIAREA_EXPORT Q_DECL_EXPORT
+#else
+#  define SNAPMDIAREA_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // SNAPMDIAREA_GLOBAL_H
