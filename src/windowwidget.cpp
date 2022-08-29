@@ -1,4 +1,5 @@
 #include "windowwidget.h"
+#include "elidedlabel.h"
 
 #include <QMdiSubWindow>
 #include <QGraphicsView>
@@ -61,19 +62,29 @@ WindowWidget::WindowWidget(QMdiSubWindow *window, ThumbnailType thumbnailType, b
     }
 
     QVBoxLayout *layout = new QVBoxLayout();
-    QLabel *title = new QLabel(window->windowTitle(), this);
+    ElidedLabel *title = new ElidedLabel(window->windowTitle(), this);
     title->setAlignment(Qt::AlignHCenter);
-
-    layout->addWidget(title);
 
     if (thumbnail)
     {
+        thumbnail->setAlignment(Qt::AlignHCenter);
         thumbnail->setScaledContents(scaleThumbnail);
         layout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Fixed, QSizePolicy::Expanding));
         layout->addWidget(thumbnail);
         layout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Fixed, QSizePolicy::Expanding));
     }
+
+    layout->addWidget(title);
+
     this->setLayout(layout);
+    this->setToolTip(window->windowTitle());
+
+    connect(window, &QMdiSubWindow::destroyed, this, &WindowWidget::deleteLater);
+}
+
+QMdiSubWindow *WindowWidget::window() const
+{
+    return this->m_window;
 }
 
 void WindowWidget::mouseReleaseEvent(QMouseEvent *event)
