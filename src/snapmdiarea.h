@@ -8,7 +8,6 @@
 #include <QPoint>
 
 class QRubberBand;
-class OverlayWidget;
 
 class SNAPMDIAREA_EXPORT SnapMdiArea : public QMdiArea
 {
@@ -36,7 +35,7 @@ protected:
     virtual void keyReleaseEvent(QKeyEvent *event) override;
 
 private slots:
-    void releaseSnap();
+    void cancelSecondSnap();
     void windowSelected(QMdiSubWindow *window);
 
 private:
@@ -47,7 +46,7 @@ private:
     bool m_dragging;
     QRect m_snapRect;
     QRubberBand *m_rubberBand;
-    OverlayWidget *m_selectorOverlay;
+    QWidget *m_selectorOverlay;
     WindowSelector *m_windowSelector;
 
 };

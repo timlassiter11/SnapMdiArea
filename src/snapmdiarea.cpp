@@ -1,5 +1,4 @@
 #include "snapmdiarea.h"
-#include "overlaywidget.h"
 #include "windowselector.h"
 
 #include <QApplication>
@@ -110,7 +109,7 @@ void SnapMdiArea::setScaleThumbnail(bool enable)
     this->m_windowSelector->setScaleThumbnail(enable);
 }
 
-void SnapMdiArea::releaseSnap()
+void SnapMdiArea::cancelSecondSnap()
 {
     this->m_rubberBand->hide();
     this->m_selectorOverlay->hide();
@@ -124,7 +123,7 @@ void SnapMdiArea::windowSelected(QMdiSubWindow *window = nullptr)
         window->setGeometry(this->m_snapRect);
         this->setActiveSubWindow(window);
     }
-    this->releaseSnap();
+    this->cancelSecondSnap();
 }
 
 void SnapMdiArea::childEvent(QChildEvent *childEvent)
@@ -146,7 +145,7 @@ void SnapMdiArea::childEvent(QChildEvent *childEvent)
 
 void SnapMdiArea::resizeEvent(QResizeEvent *resizeEvent)
 {
-    this->releaseSnap();
+    this->cancelSecondSnap();
     QSize oldSize = resizeEvent->oldSize();
     QSize newSize = resizeEvent->size();
 
@@ -158,8 +157,8 @@ void SnapMdiArea::resizeEvent(QResizeEvent *resizeEvent)
     const QList<QMdiSubWindow *> swList = this->subWindowList();
     for (QMdiSubWindow *sw : swList)
     {
-        // Ignore any maximized windows
-        if (sw->isMaximized())
+        // Ignore any maximized or minimized windows
+        if (sw->isMaximized() || sw->isShaded())
         {
             continue;
         }
@@ -222,7 +221,7 @@ void SnapMdiArea::keyReleaseEvent(QKeyEvent *event)
     // if the user presses escape.
     if (event->key() == Qt::Key_Escape)
     {
-        this->releaseSnap();
+        this->cancelSecondSnap();
     }
 
     return QMdiArea::keyReleaseEvent(event);
@@ -243,7 +242,7 @@ bool SnapMdiArea::eventFilter(QObject *watched, QEvent *event)
     {
         if (event->type() == QEvent::MouseButtonPress)
         {
-            this->releaseSnap();
+            this->cancelSecondSnap();
             QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
             if (mouseEvent->buttons() == Qt::LeftButton)
             {
