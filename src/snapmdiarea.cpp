@@ -21,27 +21,34 @@ SnapMdiArea::SnapMdiArea(QWidget *parent) :
     m_snapMargins(QMargins(30, 30, 30, 30)),
     m_snapRect(QRect()),
     m_rubberBand(new QRubberBand(QRubberBand::Rectangle, this)),
-    m_selectorOverlay(new OverlayWidget(this)),
+    m_selectorOverlay(new QWidget(this)),
     m_windowSelector(new WindowSelector(m_selectorOverlay))
 {
     m_rubberBand->hide();
     m_selectorOverlay->hide();
+    m_selectorOverlay->setObjectName("overlayWidget");
+    m_selectorOverlay->installEventFilter(this);
 
     this->setStyleSheet(
-                "WindowSelector {"
-                "   border: 2px solid grey;"
-                "   border-radius: 8px;"
-                "   background-color: rgba(0, 0, 0, 127);"
-                "}"
-                "WindowSelector WindowWidget QLabel {"
-                "   color: white;"
-                "}"
-                "WindowSelector WindowWidget {"
-                "   border-radius: 5px;"
-                "}"
-                "WindowSelector WindowWidget::hover {"
-                "   background-color: rgba(127, 127, 127, 127);"
-                "}"
+                "#overlayWidget {\n"
+                "   background-color: rgba(0, 0, 0, 127);\n"
+                "}\n"
+                "WindowSelector {\n"
+                "   border: 2px solid grey;\n"
+                "   border-radius: 8px;\n"
+                "   background-color: rgba(0, 0, 0, 127);\n"
+                "}\n"
+                "WindowSelector WindowWidget QLabel {\n"
+                "   color: white;\n"
+                "   font-size: 12px;\n"
+                "   font-weight: bold;\n"
+                "}\n"
+                "WindowSelector WindowWidget {\n"
+                "   border-radius: 5px;\n"
+                "}\n"
+                "WindowSelector WindowWidget::hover {\n"
+                "   background-color: rgba(127, 127, 127, 127);\n"
+                "}\n"
     );
     m_windowSelector->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
@@ -51,7 +58,6 @@ SnapMdiArea::SnapMdiArea(QWidget *parent) :
     layout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed));
     this->m_selectorOverlay->setLayout(layout);
     connect(this->m_windowSelector, &WindowSelector::windowSelected, this, &SnapMdiArea::windowSelected);
-    connect(this->m_selectorOverlay, &OverlayWidget::clicked, this, &SnapMdiArea::releaseSnap);
 }
 
 ThumbnailType SnapMdiArea::thumbnailType() const
@@ -224,6 +230,15 @@ void SnapMdiArea::keyReleaseEvent(QKeyEvent *event)
 
 bool SnapMdiArea::eventFilter(QObject *watched, QEvent *event)
 {
+    if (watched == this->m_selectorOverlay)
+    {
+        if (event->type() == QEvent::MouseButtonRelease)
+        {
+            QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+            if (mouseEvent->button() == Qt::LeftButton)
+                this->cancelSecondSnap();
+        }
+    }
     if (QMdiSubWindow *sw = qobject_cast<QMdiSubWindow *>(watched))
     {
         if (event->type() == QEvent::MouseButtonPress)

@@ -25,8 +25,8 @@ add_library(SnapMdiArea STATIC
   src/windowwidget.h
   src/windowselector.cpp
   src/windowselector.h
-  src/overlaywidget.cpp
-  src/overlaywidget.h
+  src/elidedlabel.h
+  src/elidedlabel.cpp
 )
 
 target_link_libraries(SnapMdiArea PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
