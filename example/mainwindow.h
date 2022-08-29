@@ -16,6 +16,8 @@ public:
     ~MainWindow();
 
 private slots:
+    void addWindow();
+
     void on_thumbnailNone_radio_clicked();
     void on_thumbnailIcon_radio_clicked();
     void on_thumbnailContents_radio_clicked();
@@ -26,7 +28,7 @@ private slots:
     void on_autoSnap_check_stateChanged(int arg1);
     void on_secondSnap_check_stateChanged(int arg1);
     void on_scaleThumbnail_check_stateChanged(int arg1);
-    void on_actionAdd_Window_triggered();
+    void on_actionEdit_Stylesheet_triggered();
 
 private:
     Ui::MainWindow *ui;

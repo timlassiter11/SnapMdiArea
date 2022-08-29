@@ -220,6 +220,8 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionAdd_Window"/>
+   <addaction name="actionTile_Windows"/>
+   <addaction name="actionEdit_Stylesheet"/>
   </widget>
   <action name="actionAdd_Window">
    <property name="icon">
@@ -228,6 +230,30 @@
    </property>
    <property name="text">
     <string>Add Window</string>
+   </property>
+  </action>
+  <action name="actionTile_Windows">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/grid.png</normaloff>:/icons/grid.png</iconset>
+   </property>
+   <property name="text">
+    <string>Tile Windows</string>
+   </property>
+   <property name="toolTip">
+    <string>Tile Windows</string>
+   </property>
+  </action>
+  <action name="actionEdit_Stylesheet">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/css.png</normaloff>:/icons/css.png</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Stylesheet</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit Stylesheet</string>
    </property>
   </action>
  </widget>

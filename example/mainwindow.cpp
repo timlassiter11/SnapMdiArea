@@ -3,6 +3,7 @@
 #include "./ui_mainwindow.h"
 
 #include <QMdiSubWindow>
+#include <QInputDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -33,11 +34,28 @@ MainWindow::MainWindow(QWidget *parent)
     ui->autoSnap_check->setChecked(ui->snapMdiArea->autoSnap());
     ui->secondSnap_check->setChecked(ui->snapMdiArea->secondSnap());
     ui->scaleThumbnail_check->setChecked(ui->snapMdiArea->scaleThumbnail());
+
+    connect(ui->actionAdd_Window, &QAction::triggered, this, &MainWindow::addWindow);
+    connect(ui->actionTile_Windows, &QAction::triggered, this->ui->snapMdiArea, &SnapMdiArea::tileSubWindows);
+
+    for (int i = 0; i < 4; ++i)
+        this->addWindow();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::addWindow()
+{
+    int windows = ui->snapMdiArea->subWindowList().length() + 1;
+    QString text = QString("Window %1").arg(windows);
+    QMdiSubWindow *sw = ui->snapMdiArea->addSubWindow(new QLabel(text));
+    sw->setWindowTitle(text);
+    sw->setWindowIcon(QIcon(":/icons/gear.png"));
+    sw->showNormal();
+    sw->resize(200, 200);
 }
 
 void MainWindow::on_thumbnailNone_radio_clicked()
@@ -98,13 +116,11 @@ void MainWindow::on_scaleThumbnail_check_stateChanged(int arg1)
     ui->snapMdiArea->setScaleThumbnail((bool)arg1);
 }
 
-void MainWindow::on_actionAdd_Window_triggered()
+void MainWindow::on_actionEdit_Stylesheet_triggered()
 {
-    int windows = ui->snapMdiArea->subWindowList().length() + 1;
-    QString text = QString("Window %1").arg(windows);
-    QMdiSubWindow *sw = ui->snapMdiArea->addSubWindow(new QLabel(text));
-    sw->setWindowTitle(text);
-    sw->setWindowIcon(QIcon(":/icons/gear.png"));
-    sw->showNormal();
-    sw->resize(200, 200);
+    bool ok;
+    QString stylesheet = QInputDialog::getMultiLineText(this, "Edit Stylesheet", "", this->ui->snapMdiArea->styleSheet(), &ok);
+    if (ok)
+        ui->snapMdiArea->setStyleSheet(stylesheet);
 }
+

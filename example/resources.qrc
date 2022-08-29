@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>icons/plus.png</file>
         <file>icons/gear.png</file>
+        <file>icons/grid.png</file>
+        <file>icons/css.png</file>
     </qresource>
 </RCC>
