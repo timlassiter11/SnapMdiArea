@@ -14,7 +14,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
-message(STATUS "${SnapMdiArea_INCLUDE_DIRS}")
 include_directories(${SnapMdiArea_INCLUDE_DIRS})
 
 set(PROJECT_SOURCES
@@ -49,6 +48,7 @@ else()
 endif()
 
 target_link_libraries(SnapMdiExample PRIVATE Qt${QT_VERSION_MAJOR}::Widgets SnapMdiArea)
+target_compile_definitions(SnapMdiExample PRIVATE -DSNAPMDIAREA_LIBRARY)
 
 set_target_properties(SnapMdiExample PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
