@@ -251,7 +251,12 @@ bool SnapMdiArea::eventFilter(QObject *watched, QEvent *event)
                 // Height of the resize handle.
                 int topMargin = handleHeight - sw->contentsMargins().top();
                 // If the user grabs the window for drag but not for resize.
-                if (mouseEvent->y() < handleHeight && mouseEvent->y() >= topMargin)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                QPointF pos = mouseEvent->position();
+#else
+                QPointF pos = mouseEvent->pos();
+#endif
+                if (pos.y() < handleHeight && pos.y() >= topMargin)
                 {
                     sw->setProperty("dragStart", sw->mapToParent(mouseEvent->pos()));
                 }
@@ -263,7 +268,11 @@ bool SnapMdiArea::eventFilter(QObject *watched, QEvent *event)
             if (mouseEvent->buttons() & Qt::LeftButton)
             {
                 // TODO: Its possible for this to return true if the drag started at (0, 0).
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                if (sw->property("dragStart").canConvert(QMetaType(QMetaType::QPoint)))
+#else
                 if (sw->property("dragStart").canConvert(QVariant::Point))
+#endif
                 {
                     QPoint dragStart = sw->property("dragStart").toPoint();
                     QPoint dPos = sw->mapToParent(mouseEvent->pos()) - dragStart;
